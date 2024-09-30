@@ -15,3 +15,32 @@ export const addBook = createAsyncThunk("books/addBooks", async (book) => {
   );
   return response.data;
 });
+
+const booksSlice = createSlice({
+  name: "books",
+  initialState: {
+    books: [],
+    status: "idle",
+    error: null,
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchBooks.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchBooks.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.books = action.payload;
+      })
+      .addCase(fetchBooks.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(addBook.fulfilled, (state, action) => {
+        state.books.push(action.payload);
+      });
+  },
+});
+
+export default booksSlice.reducer;
